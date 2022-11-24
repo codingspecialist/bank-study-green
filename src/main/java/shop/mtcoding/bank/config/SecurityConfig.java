@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import shop.mtcoding.bank.config.enums.UserEnum;
-import shop.mtcoding.bank.handler.LoginHandler;
+import shop.mtcoding.bank.handler.CustomLoginHandler;
 
 // SecurityFilterChain
 
@@ -24,7 +24,7 @@ import shop.mtcoding.bank.handler.LoginHandler;
 public class SecurityConfig {
 
     @Autowired
-    private LoginHandler loginHandler;
+    private CustomLoginHandler customLoginHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -43,13 +43,12 @@ public class SecurityConfig {
                 .antMatchers("/api/admin/**").hasRole("ROLE_" + UserEnum.ADMIN)
                 .anyRequest().permitAll()
                 .and()
-
                 .formLogin() // x-www-form-urlencoded (post)
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/api/login")
-                .successHandler(loginHandler)
-                .failureHandler(loginHandler);
+                .successHandler(customLoginHandler)
+                .failureHandler(customLoginHandler);
 
         return http.build();
     }

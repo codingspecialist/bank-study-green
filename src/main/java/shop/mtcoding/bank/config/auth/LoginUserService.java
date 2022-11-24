@@ -1,6 +1,7 @@
 package shop.mtcoding.bank.config.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +25,7 @@ public class LoginUserService implements UserDetailsService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(
-                        () -> new CustomApiException("username을 찾을 수 없습니다", 400));
+                        () -> new CustomApiException("username을 찾을 수 없습니다", HttpStatus.BAD_REQUEST));
         return new LoginUser(user);
     }
 

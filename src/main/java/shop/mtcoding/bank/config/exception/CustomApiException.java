@@ -1,14 +1,16 @@
 package shop.mtcoding.bank.config.exception;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.Getter;
 
 @Getter
 public class CustomApiException extends RuntimeException {
 
-    private final int httpStatusCode;
+    private final HttpStatus httpStatus;
 
-    public CustomApiException(String msg, int httpStatusCode) {
+    public CustomApiException(String msg, HttpStatus httpStatus) {
         super(msg);
-        this.httpStatusCode = httpStatusCode;
+        this.httpStatus = httpStatus;
     }
 }
