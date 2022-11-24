@@ -13,6 +13,13 @@ public class UserReqDto {
 
     @Getter
     @Setter
+    public static class LoginReqDto {
+        private String username;
+        private String password;
+    }
+
+    @Getter
+    @Setter
     public static class JoinReqDto {
         @Size(min = 2, max = 20)
         @NotBlank(message = "유저네임은 필수입니다.")
