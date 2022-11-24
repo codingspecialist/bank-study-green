@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.dto.ResponseDto;
+import shop.mtcoding.bank.dto.UserRespDto.LoginRespDto;
 
 @Component
 public class CustomLoginHandler implements AuthenticationSuccessHandler, AuthenticationFailureHandler {
@@ -32,9 +33,10 @@ public class CustomLoginHandler implements AuthenticationSuccessHandler, Authent
 
                 LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication()
                                 .getPrincipal();
+                LoginRespDto loginRespDto = new LoginRespDto(loginUser.getUser());
 
                 ObjectMapper om = new ObjectMapper();
-                ResponseDto<?> responseDto = new ResponseDto<>("로그인 성공", null);
+                ResponseDto<?> responseDto = new ResponseDto<>("로그인 성공", loginRespDto);
                 String responseBody = om.writeValueAsString(responseDto);
                 response.setContentType("application/json; charset=utf-8");
                 response.setStatus(200);
