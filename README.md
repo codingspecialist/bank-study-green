@@ -6,13 +6,13 @@
 - 그리고 수정 보완하는 것!!
 
 ### 진행순서
-- 도메인 생성
-- ExceptionHandling
-- 시큐리티 설정
-- logger 세팅
+- 도메인 생성 (완)
+- ExceptionHandling (완)
+- 시큐리티 설정 (완)
+- logger 세팅 (완)
+- 회원가입 (완) - 테스트 (완)
+- 로그인 (완) - 테스트
 - DTO Validation AOP
-- 회원가입
-- 로그인
 - JWT 로그인으로 변경
 - 서비스 기능 만들기
 
