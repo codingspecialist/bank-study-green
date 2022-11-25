@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import shop.mtcoding.bank.config.auth.LoginUser;
-import shop.mtcoding.bank.util.CustomResponseUtil;
 
 /**
  * /api/user/**, /api/account/**, /api/transaction/**, /api/admin/**

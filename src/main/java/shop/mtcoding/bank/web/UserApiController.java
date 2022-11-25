@@ -25,14 +25,9 @@ public class UserApiController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UserService userService;
 
-    @GetMapping("/user/session")
-    public String userSession(@AuthenticationPrincipal LoginUser loginUser) {
-        return "username : " + loginUser.getUsername();
-    }
-
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody JoinReqDto joinReqDto) {
-        log.debug("디버그 : join 실행됨");
+        log.debug("디버그 : UserApiController join 실행됨");
         JoinRespDto joinRespDto = userService.회원가입(joinReqDto);
         return new ResponseEntity<>(new ResponseDto<>("회원가입성공", joinRespDto), HttpStatus.CREATED);
     }

@@ -22,6 +22,7 @@ public class SecurityConfig {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
+        log.debug("디버그 : passwordEncoder Bean 등록됨");
         return new BCryptPasswordEncoder();
     }
 

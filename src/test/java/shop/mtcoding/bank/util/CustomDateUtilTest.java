@@ -13,8 +13,6 @@ public class CustomDateUtilTest {
 
         // when
         String result = CustomDateUtil.toStringFormat(localDateTime);
-        System.out.println("디버그 : " + result);
-
-        // then
+        System.out.println(result);
     }
 }

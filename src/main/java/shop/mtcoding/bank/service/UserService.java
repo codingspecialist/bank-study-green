@@ -22,7 +22,7 @@ public class UserService {
 
     @Transactional
     public JoinRespDto 회원가입(JoinReqDto joinReqDto) {
-        log.debug("디버그 : 회원가입 실행됨");
+        log.debug("디버그 : 서비스 회원가입 실행됨");
         // 1. 비밀번호 암호화
         String rawPassword = joinReqDto.getPassword();
         String encPassword = passwordEncoder.encode(rawPassword);

@@ -1,7 +1,6 @@
 package shop.mtcoding.bank.config.jwt;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,12 +16,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.bank.config.auth.LoginUser;
-import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.dto.UserReqDto.LoginReqDto;
 import shop.mtcoding.bank.dto.UserRespDto.LoginRespDto;
 import shop.mtcoding.bank.util.CustomResponseUtil;
@@ -53,18 +49,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     loginReqDto.getPassword());
 
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-            log.debug("디버그5 authentication : null이 리턴됨");
             return authentication;
         } catch (Exception e) {
             throw new InternalAuthenticationServiceException(e.getMessage());
         }
-    }
-
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException {
-        CustomResponseUtil.fail(response, "로그인 실패");
     }
 
     @Override
@@ -83,6 +71,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 4. 토큰 담아서 성공 응답하기
         LoginRespDto loginRespDto = new LoginRespDto(loginUser.getUser());
         CustomResponseUtil.success(response, loginRespDto);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException failed) throws IOException, ServletException {
+        log.debug("디버그 : unsuccessfulAuthentication 요청됨");
+        CustomResponseUtil.fail(response, "로그인 실패");
     }
 
 }
