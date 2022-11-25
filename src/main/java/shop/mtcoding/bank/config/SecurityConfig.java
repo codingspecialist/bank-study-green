@@ -44,14 +44,14 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.formLogin().disable();
         http.httpBasic().disable();
-
+        http.apply(new MyCustomDsl());
         http.authorizeHttpRequests()
                 .antMatchers("/api/transaction/**").authenticated()
                 .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/account/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ROLE_" + UserEnum.ADMIN)
                 .anyRequest().permitAll();
-        http.apply(new MyCustomDsl());
+
         return http.build();
     }
 }
