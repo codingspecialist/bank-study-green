@@ -27,11 +27,9 @@ public class UserService {
         String rawPassword = joinReqDto.getPassword();
         String encPassword = passwordEncoder.encode(rawPassword);
         joinReqDto.setPassword(encPassword);
-        log.debug("디버그 : encPassword : " + encPassword);
 
         // 2. 회원가입
         User userPS = userRepository.save(joinReqDto.toEntity());
-        log.debug("디버그 : 회원가입 save 완료");
 
         // 3. DTO 응답
         return new JoinRespDto(userPS);

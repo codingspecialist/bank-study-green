@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -21,7 +22,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.bank.config.auth.LoginUser;
+import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.dto.UserReqDto.LoginReqDto;
+import shop.mtcoding.bank.dto.UserRespDto.LoginRespDto;
+import shop.mtcoding.bank.util.CustomResponseUtil;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -39,6 +43,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throws AuthenticationException {
 
         log.debug("디버그 : attemptAuthentication 요청됨");
+
         try {
             ObjectMapper om = new ObjectMapper();
             LoginReqDto loginReqDto = om.readValue(request.getInputStream(), LoginReqDto.class);
@@ -48,27 +53,36 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     loginReqDto.getPassword());
 
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+            log.debug("디버그5 authentication : null이 리턴됨");
             return authentication;
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new InternalAuthenticationServiceException(e.getMessage());
         }
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException failed) throws IOException, ServletException {
+        CustomResponseUtil.fail(response, "로그인 실패");
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
-
+        log.debug("디버그 : successfulAuthentication 요청됨");
+        // 1. 세션에 있는 UserDetails 가져오기
         LoginUser loginUser = (LoginUser) authResult.getPrincipal();
 
-        String jwtToken = JWT.create()
-                .withSubject(loginUser.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-                .withClaim("id", loginUser.getUser().getId())
-                .withClaim("username", loginUser.getUser().getUsername())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        // 2. 세션값으로 토큰 생성
+        String jwtToken = JwtProcess.create(loginUser);
 
+        // 3. 토큰을 헤더에 담기
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+
+        // 4. 토큰 담아서 성공 응답하기
+        LoginRespDto loginRespDto = new LoginRespDto(loginUser.getUser());
+        CustomResponseUtil.success(response, loginRespDto);
     }
 
 }

@@ -2,7 +2,6 @@ package shop.mtcoding.bank.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,15 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import shop.mtcoding.bank.config.enums.UserEnum;
 import shop.mtcoding.bank.config.jwt.JwtAuthenticationFilter;
 import shop.mtcoding.bank.config.jwt.JwtAuthorizationFilter;
-import shop.mtcoding.bank.domain.user.UserRepository;
 
 @Configuration
 public class SecurityConfig {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -36,8 +31,7 @@ public class SecurityConfig {
             log.debug("디버그 : SecurityConfig의 configure");
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilter(new JwtAuthenticationFilter(authenticationManager));
-            http.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
-
+            http.addFilter(new JwtAuthorizationFilter(authenticationManager));
         }
     }
 
@@ -46,17 +40,18 @@ public class SecurityConfig {
         log.debug("디버그 : SecurityConfig의 filterChain");
         http.headers().frameOptions().disable();
         http.csrf().disable();
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.formLogin().disable();
         http.httpBasic().disable();
-        http.apply(new MyCustomDsl());
+
         http.authorizeHttpRequests()
                 .antMatchers("/api/transaction/**").authenticated()
                 .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/account/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ROLE_" + UserEnum.ADMIN)
                 .anyRequest().permitAll();
-
+        http.apply(new MyCustomDsl());
         return http.build();
     }
 }
