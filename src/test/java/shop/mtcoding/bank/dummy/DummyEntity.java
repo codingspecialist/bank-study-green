@@ -8,7 +8,6 @@ import shop.mtcoding.bank.domain.user.User;
 public class DummyEntity {
 
     protected User newUser(String username) {
-        System.out.println("나 먼저 실행 -------------------------");
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encPassword = passwordEncoder.encode("1234");
         User user = User.builder()

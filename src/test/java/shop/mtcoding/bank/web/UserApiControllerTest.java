@@ -1,6 +1,11 @@
 package shop.mtcoding.bank.web;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.UserReqDto.JoinReqDto;
+import shop.mtcoding.bank.dto.UserReqDto.LoginReqDto;
 import shop.mtcoding.bank.dummy.DummyEntity;
 
 @Sql("classpath:db/truncate.sql") // 롤백 대신 사용 (auto_increment 초기화 + 데이터 비우기)
@@ -64,6 +70,31 @@ public class UserApiControllerTest extends DummyEntity {
         // then
         resultActions.andExpect(status().isCreated());
         resultActions.andExpect(jsonPath("$.data.username").value("ssar"));
+    }
+
+    @Test
+    public void login_test() throws Exception {
+        // given
+        LoginReqDto loginReqDto = new LoginReqDto();
+        loginReqDto.setUsername("cos");
+        loginReqDto.setPassword("1234");
+        String requestBody = om.writeValueAsString(loginReqDto);
+        System.out.println(requestBody);
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(post("/login").content(requestBody)
+                        .contentType(APPLICATION_JSON_UTF8));
+        String token = resultActions.andReturn().getResponse().getHeader("Authorization");
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println(token);
+        System.out.println(responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk());
+        assertNotNull(token);
+        assertTrue(token.startsWith("Bearer"));
+        resultActions.andExpect(jsonPath("$.data.username").value("cos"));
     }
 
     public void dataInsert() {
