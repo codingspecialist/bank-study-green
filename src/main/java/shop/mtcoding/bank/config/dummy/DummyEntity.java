@@ -1,4 +1,4 @@
-package shop.mtcoding.bank.dummy;
+package shop.mtcoding.bank.config.dummy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

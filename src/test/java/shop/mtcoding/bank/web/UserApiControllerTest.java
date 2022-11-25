@@ -22,11 +22,11 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.mtcoding.bank.config.dummy.DummyEntity;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.UserReqDto.JoinReqDto;
 import shop.mtcoding.bank.dto.UserReqDto.LoginReqDto;
-import shop.mtcoding.bank.dummy.DummyEntity;
 
 @Sql("classpath:db/truncate.sql") // 롤백 대신 사용 (auto_increment 초기화 + 데이터 비우기)
 @ActiveProfiles("test")
