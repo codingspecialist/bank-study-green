@@ -17,7 +17,6 @@ public class JwtProcess {
                 .withSubject(loginUser.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .withClaim("id", loginUser.getUser().getId())
-                .withClaim("username", loginUser.getUser().getUsername())
                 .withClaim("role", loginUser.getUser().getRole().name())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
@@ -26,11 +25,9 @@ public class JwtProcess {
 
     public static LoginUser verify(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
-
         Long id = decodedJWT.getClaim("id").asLong();
-        String username = decodedJWT.getClaim("username").asString();
         String role = decodedJWT.getClaim("role").asString();
-        User user = User.builder().id(id).username(username).role(UserEnum.valueOf(role)).build();
+        User user = User.builder().id(id).role(UserEnum.valueOf(role)).build();
         LoginUser loginUser = new LoginUser(user);
         return loginUser;
     }

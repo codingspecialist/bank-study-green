@@ -4,24 +4,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import shop.mtcoding.bank.domain.user.User;
+import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.UserReqDto.JoinReqDto;
+import shop.mtcoding.bank.dummy.DummyEntity;
 
+@Sql("classpath:db/truncate.sql") // 롤백 대신 사용 (auto_increment 초기화 + 데이터 비우기)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
-public class UserApiControllerTest {
+public class UserApiControllerTest extends DummyEntity {
 
     private static final String APPLICATION_JSON_UTF8 = "application/json; charset=utf-8";
     private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded; charset=utf-8";
@@ -31,6 +36,14 @@ public class UserApiControllerTest {
 
     @Autowired
     private ObjectMapper om;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @BeforeEach
+    public void setUp() {
+        dataInsert();
+    }
 
     @Test
     public void join_test() throws Exception {
@@ -53,4 +66,8 @@ public class UserApiControllerTest {
         resultActions.andExpect(jsonPath("$.data.username").value("ssar"));
     }
 
+    public void dataInsert() {
+        User user = newUser("cos");
+        userRepository.save(user);
+    }
 }

@@ -23,14 +23,13 @@ public class UserService {
     @Transactional
     public JoinRespDto 회원가입(JoinReqDto joinReqDto) {
         log.debug("디버그 : 서비스 회원가입 실행됨");
+
         // 1. 비밀번호 암호화
         String rawPassword = joinReqDto.getPassword();
         String encPassword = passwordEncoder.encode(rawPassword);
         joinReqDto.setPassword(encPassword);
-
         // 2. 회원가입
         User userPS = userRepository.save(joinReqDto.toEntity());
-
         // 3. DTO 응답
         return new JoinRespDto(userPS);
     }
