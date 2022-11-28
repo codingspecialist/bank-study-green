@@ -1,10 +1,9 @@
-package shop.mtcoding.bank.util;
+package shop.mtcoding.bank.config.jwt;
 
 import org.junit.jupiter.api.Test;
 
 import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.config.enums.UserEnum;
-import shop.mtcoding.bank.config.jwt.JwtProcess;
 import shop.mtcoding.bank.domain.user.User;
 
 public class JwtProcessTest {

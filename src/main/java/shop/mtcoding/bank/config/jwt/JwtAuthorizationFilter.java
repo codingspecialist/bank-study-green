@@ -18,8 +18,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import shop.mtcoding.bank.config.auth.LoginUser;
 
 /**
- * /api/user/**, /api/account/**, /api/transaction/**, /api/admin/**
- * 위 주소일때만 동작해야함.
+ * 모든 주소에서 동작함. (토큰 검증)
  */
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -44,9 +43,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser,
                     null, loginUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("디버그 : 토큰 검증 완료, 필터탐");
         }
 
         // 2. 세션이 있는 경우와 없는 경우로 나뉘어서 컨트롤러로 진입함
+        log.debug("디버그 : 필터탐");
         chain.doFilter(request, response);
     }
 

@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import shop.mtcoding.bank.config.enums.UserEnum;
 import shop.mtcoding.bank.config.jwt.JwtAuthenticationFilter;
 import shop.mtcoding.bank.config.jwt.JwtAuthorizationFilter;
+import shop.mtcoding.bank.util.CustomResponseUtil;
 
 @Configuration
 public class SecurityConfig {
@@ -41,6 +42,12 @@ public class SecurityConfig {
         log.debug("디버그 : SecurityConfig의 filterChain");
         http.headers().frameOptions().disable();
         http.csrf().disable();
+
+        // ExcpetionTranslationFilter (인증 권한 확인 필터)
+        http.exceptionHandling().authenticationEntryPoint(
+                (request, response, authException) -> {
+                    CustomResponseUtil.fail(response, "권한없음");
+                });
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.formLogin().disable();

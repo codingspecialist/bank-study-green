@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import shop.mtcoding.bank.config.enums.UserEnum;
 import shop.mtcoding.bank.domain.user.User;
 
-public class DummyEntity {
+public abstract class DummyEntity {
 
     protected User newUser(String username) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

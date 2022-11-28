@@ -26,16 +26,16 @@ public class Account extends AudingTime {
     private Long id;
 
     @Column(unique = true, nullable = false, length = 50)
-    private Long number;
+    private Long number; // 계좌번호
 
     @Column(nullable = false, length = 50)
     private String ownerName; // 계좌주 실명
 
     @Column(nullable = false, length = 4)
-    private String password;
+    private String password; // 계좌비밀번호
 
     @Column(nullable = false)
-    private Long balance; // 잔액
+    private Long balance; // 잔액 (디폴트 값 1000원)
 
     // 커멜케이스는 DB에 언더스코어로 생성된다.
     @Column(nullable = false)
