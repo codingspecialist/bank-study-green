@@ -1,15 +1,9 @@
 package shop.mtcoding.bank.web;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,17 +16,13 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import shop.mtcoding.bank.config.dummy.DummyEntity;
-import shop.mtcoding.bank.domain.user.User;
-import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.UserReqDto.JoinReqDto;
-import shop.mtcoding.bank.dto.UserReqDto.LoginReqDto;
 
 @Sql("classpath:db/truncate.sql") // 롤백 대신 사용 (auto_increment 초기화 + 데이터 비우기)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
-public class UserApiControllerTest extends DummyEntity {
+public class UserApiControllerTest {
 
     private static final String APPLICATION_JSON_UTF8 = "application/json; charset=utf-8";
     private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded; charset=utf-8";
@@ -42,14 +32,6 @@ public class UserApiControllerTest extends DummyEntity {
 
     @Autowired
     private ObjectMapper om;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @BeforeEach
-    public void setUp() {
-        dataInsert();
-    }
 
     @Test
     public void join_test() throws Exception {
@@ -70,35 +52,5 @@ public class UserApiControllerTest extends DummyEntity {
         // then
         resultActions.andExpect(status().isCreated());
         resultActions.andExpect(jsonPath("$.data.username").value("ssar"));
-    }
-
-    @Test
-    public void login_test() throws Exception {
-        // given
-        LoginReqDto loginReqDto = new LoginReqDto();
-        loginReqDto.setUsername("cos");
-        loginReqDto.setPassword("1234");
-        String requestBody = om.writeValueAsString(loginReqDto);
-        System.out.println(requestBody);
-
-        // when
-        ResultActions resultActions = mvc
-                .perform(post("/login").content(requestBody)
-                        .contentType(APPLICATION_JSON_UTF8));
-        String token = resultActions.andReturn().getResponse().getHeader("Authorization");
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println(token);
-        System.out.println(responseBody);
-
-        // then
-        resultActions.andExpect(status().isOk());
-        assertNotNull(token);
-        assertTrue(token.startsWith("Bearer"));
-        resultActions.andExpect(jsonPath("$.data.username").value("cos"));
-    }
-
-    public void dataInsert() {
-        User user = newUser("cos");
-        userRepository.save(user);
     }
 }
