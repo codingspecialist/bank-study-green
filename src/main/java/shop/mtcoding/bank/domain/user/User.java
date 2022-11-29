@@ -25,7 +25,7 @@ import shop.mtcoding.bank.domain.AudingTime;
 public class User extends AudingTime {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false, length = 20)
