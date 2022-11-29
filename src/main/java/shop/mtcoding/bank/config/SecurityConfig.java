@@ -14,13 +14,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import lombok.RequiredArgsConstructor;
 import shop.mtcoding.bank.config.enums.UserEnum;
 import shop.mtcoding.bank.config.jwt.JwtAuthenticationFilter;
 import shop.mtcoding.bank.config.jwt.JwtAuthorizationFilter;
 import shop.mtcoding.bank.util.CustomResponseUtil;
 
-@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
@@ -37,11 +35,12 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             log.debug("디버그 : SecurityConfig의 configure");
+
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilter(new JwtAuthenticationFilter(authenticationManager));
             http.addFilter(new JwtAuthorizationFilter(authenticationManager));
-            // http.cors();
         }
+
     }
 
     @Bean
@@ -49,6 +48,7 @@ public class SecurityConfig {
         log.debug("디버그 : SecurityConfig의 filterChain");
         http.headers().frameOptions().disable();
         http.csrf().disable();
+        http.cors().configurationSource(configurationSource());
 
         // ExcpetionTranslationFilter (인증 권한 확인 필터)
         http.exceptionHandling().authenticationEntryPoint(
@@ -60,6 +60,7 @@ public class SecurityConfig {
         http.formLogin().disable();
         http.httpBasic().disable();
         http.apply(new MyCustomDsl());
+
         http.authorizeHttpRequests()
                 .antMatchers("/api/transaction/**").authenticated()
                 .antMatchers("/api/user/**").authenticated()
@@ -70,7 +71,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");

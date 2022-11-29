@@ -78,7 +78,7 @@ public class AccountApiControllerTest extends DummyEntity {
     public void save_test() throws Exception {
         // given
         AccountSaveReqDto accountSaveReqDto = new AccountSaveReqDto();
-        accountSaveReqDto.setNumber(1111L);
+        accountSaveReqDto.setNumber(3333L);
         accountSaveReqDto.setPassword("1234");
         String requestBody = om.writeValueAsString(accountSaveReqDto);
         System.out.println("테스트 : " + requestBody);
@@ -92,6 +92,6 @@ public class AccountApiControllerTest extends DummyEntity {
 
         // then
         resultActions.andExpect(status().isCreated());
-        resultActions.andExpect(jsonPath("$.data.number").value(1111L));
+        resultActions.andExpect(jsonPath("$.data.number").value(3333L));
     }
 }
