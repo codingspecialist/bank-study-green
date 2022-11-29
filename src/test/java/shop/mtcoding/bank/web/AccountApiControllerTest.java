@@ -68,7 +68,9 @@ public class AccountApiControllerTest extends DummyEntity {
         System.out.println("테스트 : " + responseBody);
 
         // then
-
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.user.fullName").value("ssar"));
+        resultActions.andExpect(jsonPath("$.data.accounts.[0].balance").value(1000L));
     }
 
     @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
