@@ -40,4 +40,18 @@ public class CustomResponseUtil {
         }
 
     }
+
+    public static void forbidden(HttpServletResponse response, String msg) {
+        try {
+            ObjectMapper om = new ObjectMapper();
+            ResponseDto<?> responseDto = new ResponseDto<>(msg, null);
+            String responseBody = om.writeValueAsString(responseDto);
+            response.setContentType("application/json; charset=utf-8");
+            response.setStatus(403);
+            response.getWriter().println(responseBody);
+        } catch (Exception e) {
+            log.error("서버 파싱 에러");
+        }
+
+    }
 }

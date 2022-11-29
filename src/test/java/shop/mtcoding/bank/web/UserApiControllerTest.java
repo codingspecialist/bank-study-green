@@ -40,6 +40,8 @@ public class UserApiControllerTest {
         joinReqDto.setUsername("ssar");
         joinReqDto.setPassword("1234");
         joinReqDto.setEmail("ssar@nate.com");
+        joinReqDto.setFullName("쌀");
+
         String requestBody = om.writeValueAsString(joinReqDto);
 
         // when

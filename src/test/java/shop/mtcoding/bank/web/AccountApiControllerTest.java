@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -45,15 +47,13 @@ public class AccountApiControllerTest extends DummyEntity {
         userRepository.save(ssar);
     }
 
-    // @WithUserDetails(value = "ssar", setupBefore =
-    // TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void save_test() throws Exception {
         // given
         AccountSaveReqDto accountSaveReqDto = new AccountSaveReqDto();
         accountSaveReqDto.setNumber(1111L);
         accountSaveReqDto.setPassword("1234");
-        accountSaveReqDto.setOwnerName("쌀");
         String requestBody = om.writeValueAsString(accountSaveReqDto);
         System.out.println("테스트 : " + requestBody);
 

@@ -14,6 +14,7 @@ public abstract class DummyEntity {
         User user = User.builder()
                 .username(username)
                 .password(encPassword)
+                .fullName(username + "계좌주이름")
                 .email(username + "@nate.com")
                 .role(username.equals("admin") ? UserEnum.ADMIN : UserEnum.CUSTOMER)
                 .build();
@@ -24,7 +25,6 @@ public abstract class DummyEntity {
         Account account = Account.builder()
                 .number(number)
                 .password("1234")
-                .ownerName(user.getUsername())
                 .balance(1000L)
                 .user(user)
                 .isActive(true)

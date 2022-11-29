@@ -1,12 +1,16 @@
 package shop.mtcoding.bank.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import shop.mtcoding.bank.config.exception.CustomApiException;
 import shop.mtcoding.bank.domain.account.Account;
 import shop.mtcoding.bank.domain.account.AccountRepository;
@@ -29,6 +33,27 @@ public class AccountService {
     // 본인계좌삭제하기
 
     // 본인계좌목록보기
+    public void 본인_계좌목록보기(Long userId) {
+        List<Account> accountListPS = accountRepository.findByActiveUserId(userId);
+    }
+
+    public static class AccountListRespDto {
+        private UserDto user;
+        private List<AccountDto> accounts;
+
+        @Setter
+        @Getter
+        public class UserDto {
+            private Long id; // user 것
+            private String ownerName; // account 필드
+        }
+
+        public class AccountDto {
+            private Long id;
+            private Long number;
+            private Long balance;
+        }
+    }
 
     @Transactional
     public AccountSaveRespDto 계좌생성(AccountSaveReqDto accountSaveReqDto, Long userId) {

@@ -53,7 +53,7 @@ public class SecurityConfig {
         // ExcpetionTranslationFilter (인증 권한 확인 필터)
         http.exceptionHandling().authenticationEntryPoint(
                 (request, response, authException) -> {
-                    CustomResponseUtil.fail(response, "권한없음");
+                    CustomResponseUtil.forbidden(response, "권한없음");
                 });
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -34,17 +34,20 @@ public class User extends AudingTime {
     private String password;
     @Column(nullable = false, length = 50)
     private String email;
+    @Column(nullable = false, length = 20)
+    private String fullName;
 
     @Enumerated(EnumType.STRING) // enum 쓸때 어노테이션
     @Column(nullable = false)
     private UserEnum role; // ADMIN, CUSTOMER
 
     @Builder
-    public User(Long id, String username, String password, String email, UserEnum role) {
+    public User(Long id, String username, String password, String email, String fullName, UserEnum role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.fullName = fullName;
         this.role = role;
     }
 

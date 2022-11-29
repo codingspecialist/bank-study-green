@@ -10,13 +10,11 @@ public class AccountRespDto {
     public static class AccountSaveRespDto {
         private Long id;
         private Long number;
-        private String ownerName;
         private Long balance;
 
         public AccountSaveRespDto(Account account) {
             this.id = account.getId();
             this.number = account.getNumber();
-            this.ownerName = account.getOwnerName();
             this.balance = account.getBalance();
         }
     }
