@@ -24,6 +24,12 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
 
+    // 계좌상세보기 (Account + List<Transaction>) Transaction 구현하고 만들기
+
+    // 본인계좌삭제하기
+
+    // 본인계좌목록보기
+
     @Transactional
     public AccountSaveRespDto 계좌생성(AccountSaveReqDto accountSaveReqDto, Long userId) {
         log.debug("디버그 : 계좌생성 서비스 호출됨");
