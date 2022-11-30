@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.config.exception.CustomApiException;
+import shop.mtcoding.bank.dto.AccountReqDto.AccountDeleteReqDto;
 import shop.mtcoding.bank.dto.AccountReqDto.AccountSaveReqDto;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDtoV3;
@@ -29,6 +31,15 @@ public class AccountApiController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final AccountService accountService;
+
+    @PutMapping("/account/{accountId}/delete")
+    public ResponseEntity<?> delete(
+            @PathVariable Long accountId,
+            @RequestBody AccountDeleteReqDto accountDeleteReqDto,
+            @AuthenticationPrincipal LoginUser loginUser) {
+        accountService.본인_계좌삭제(accountDeleteReqDto, loginUser.getUser().getId(), accountId);
+        return new ResponseEntity<>(new ResponseDto<>("계좌삭제완료", null), HttpStatus.OK);
+    }
 
     @GetMapping("/user/{userId}/account")
     public ResponseEntity<?> list(@PathVariable Long userId, @AuthenticationPrincipal LoginUser loginUser) {

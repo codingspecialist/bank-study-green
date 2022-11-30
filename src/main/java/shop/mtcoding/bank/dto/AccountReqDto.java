@@ -6,6 +6,13 @@ import shop.mtcoding.bank.domain.account.Account;
 import shop.mtcoding.bank.domain.user.User;
 
 public class AccountReqDto {
+
+    @Setter
+    @Getter
+    public static class AccountDeleteReqDto {
+        private String password;
+    }
+
     @Setter
     @Getter
     public static class AccountSaveReqDto {

@@ -24,7 +24,7 @@ import shop.mtcoding.bank.domain.AudingTime;
 import shop.mtcoding.bank.domain.account.Account;
 
 @ToString
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "users")
 @Entity
