@@ -17,6 +17,7 @@ import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.config.exception.CustomApiException;
 import shop.mtcoding.bank.dto.AccountReqDto.AccountSaveReqDto;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDto;
+import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDtoV3;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.service.AccountService;
@@ -37,6 +38,30 @@ public class AccountApiController {
         AccountListRespDto accountListRespDto = accountService.본인_계좌목록보기(userId);
         return new ResponseEntity<>(new ResponseDto<>("본인 계좌목록보기 성공", accountListRespDto), HttpStatus.OK);
     }
+
+    @GetMapping("/v2/user/{userId}/account")
+    public ResponseEntity<?> list2(@PathVariable Long userId, @AuthenticationPrincipal LoginUser loginUser) {
+        if (userId != loginUser.getUser().getId()) {
+            throw new CustomApiException("권한이없습니다.", HttpStatus.FORBIDDEN);
+        }
+        AccountListRespDto accountListRespDto = accountService.본인_계좌목록보기v2(userId);
+        return new ResponseEntity<>(new ResponseDto<>("본인 계좌목록보기 성공", accountListRespDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/v3/user/{userId}/account")
+    public ResponseEntity<?> list3(@PathVariable Long userId, @AuthenticationPrincipal LoginUser loginUser) {
+        if (userId != loginUser.getUser().getId()) {
+            throw new CustomApiException("권한이없습니다.", HttpStatus.FORBIDDEN);
+        }
+        AccountListRespDtoV3 accountListRespDto = accountService.본인_계좌목록보기v3(userId);
+        return new ResponseEntity<>(new ResponseDto<>("본인 계좌목록보기 성공", accountListRespDto), HttpStatus.OK);
+    }
+
+    // where 절은 무조건 받기
+    // 컨트롤러체크, 서비스체크
+    // /account/2
+
+    // /api/love
 
     // /api/account/** (인증 필요)
     @PostMapping("/account")

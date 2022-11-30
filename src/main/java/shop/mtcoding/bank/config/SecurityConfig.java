@@ -1,5 +1,8 @@
 package shop.mtcoding.bank.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +38,6 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             log.debug("디버그 : SecurityConfig의 configure");
-
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilter(new JwtAuthenticationFilter(authenticationManager));
             http.addFilter(new JwtAuthorizationFilter(authenticationManager));
@@ -75,6 +77,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
+        // configuration.setAllowedMethods(List.of("GET", "POST", "PUT"));
 
         // https://cotak.tistory.com/248
         configuration.addAllowedOriginPattern("*"); // 프론트 서버의 주소

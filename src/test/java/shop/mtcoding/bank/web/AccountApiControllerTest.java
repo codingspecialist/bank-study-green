@@ -70,7 +70,43 @@ public class AccountApiControllerTest extends DummyEntity {
         // then
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(jsonPath("$.data.user.fullName").value("ssar"));
-        resultActions.andExpect(jsonPath("$.data.accounts.[0].balance").value(1000L));
+        // resultActions.andExpect(jsonPath("$.data.accounts.[0].balance").value(1000L));
+    }
+
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void listv2_test() throws Exception {
+        // given
+        Long userId = 1L;
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(get("/api/v2/user/" + userId + "/account"));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.user.fullName").value("ssar"));
+        // resultActions.andExpect(jsonPath("$.data.accounts.[0].balance").value(1000L));
+    }
+
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void listv3_test() throws Exception {
+        // given
+        Long userId = 1L;
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(get("/api/v3/user/" + userId + "/account"));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.user.fullName").value("ssar"));
+        // resultActions.andExpect(jsonPath("$.data.accounts.[0].balance").value(1000L));
     }
 
     @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)

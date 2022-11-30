@@ -16,6 +16,7 @@ import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.AccountReqDto.AccountSaveReqDto;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDto;
+import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDtoV3;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountSaveRespDto;
 
 @RequiredArgsConstructor
@@ -34,7 +35,27 @@ public class AccountService {
     // 본인계좌목록보기
     public AccountListRespDto 본인_계좌목록보기(Long userId) {
         List<Account> accountListPS = accountRepository.findByActiveUserId(userId);
-        return new AccountListRespDto(accountListPS);
+        if (accountListPS.size() == 0) {
+            User userPS = userRepository.findById(userId).orElseThrow(
+                    () -> new CustomApiException("사용자를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+            return new AccountListRespDto(userPS);
+        } else {
+            return new AccountListRespDto(accountListPS);
+        }
+    }
+
+    // select 두번
+    public AccountListRespDto 본인_계좌목록보기v2(Long userId) {
+        User userPS = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomApiException("유저 못찾음", HttpStatus.BAD_REQUEST));
+        List<Account> accountListPS = accountRepository.findByActiveUserIdv2(userId);
+        return new AccountListRespDto(userPS, accountListPS);
+    }
+
+    // 양방향 매핑
+    public AccountListRespDtoV3 본인_계좌목록보기v3(Long userId) {
+        User user = userRepository.findByActiveUserIdv3(userId);
+        return new AccountListRespDtoV3(user);
     }
 
     @Transactional
