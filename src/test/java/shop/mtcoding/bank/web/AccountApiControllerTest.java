@@ -66,6 +66,7 @@ public class AccountApiControllerTest extends DummyEntity {
         // when
         ResultActions resultActions = mvc
                 .perform(get("/api/user/" + userId + "/account"));
+
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
