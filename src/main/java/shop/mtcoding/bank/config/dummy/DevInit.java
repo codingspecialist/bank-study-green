@@ -21,8 +21,8 @@ public class DevInit extends DummyEntity {
 
         return (args) -> {
             User ssar = userRepository.save(newUser("ssar"));
-            Account ssarAccount1 = accountRepository.save(newAccount(1111L, ssar));
-            Account ssarAccount2 = accountRepository.save(newAccount(2222L, ssar));
+            // Account ssarAccount1 = accountRepository.save(newAccount(1111L, ssar));
+            // Account ssarAccount2 = accountRepository.save(newAccount(2222L, ssar));
         };
     }
 }

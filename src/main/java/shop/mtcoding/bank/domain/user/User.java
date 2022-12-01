@@ -60,4 +60,10 @@ public class User extends AudingTime {
         this.role = role;
     }
 
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
+                + ", fullName=" + fullName + ", role=" + role + "]";
+    }
+
 }

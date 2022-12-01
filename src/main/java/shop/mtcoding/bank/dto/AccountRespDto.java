@@ -20,6 +20,7 @@ public class AccountRespDto {
             this.user = new UserDto(user);
             this.accounts = user.getAccounts().stream().map((account) -> new AccountDto(account))
                     .collect(Collectors.toList());
+
         }
 
         @Setter
