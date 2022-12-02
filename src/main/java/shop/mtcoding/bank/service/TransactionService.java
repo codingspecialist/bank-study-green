@@ -1,8 +1,6 @@
 package shop.mtcoding.bank.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import shop.mtcoding.bank.config.enums.TransactionEnum;
 import shop.mtcoding.bank.config.exception.CustomApiException;
 import shop.mtcoding.bank.domain.account.Account;
@@ -23,9 +19,9 @@ import shop.mtcoding.bank.dto.TransactionReqDto.DepositReqDto;
 import shop.mtcoding.bank.dto.TransactionReqDto.TransferReqDto;
 import shop.mtcoding.bank.dto.TransactionReqDto.WithdrawReqDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.DepositRespDto;
+import shop.mtcoding.bank.dto.TransactionRespDto.TransactionListRespDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.TransferRespDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.WithdrawRespDto;
-import shop.mtcoding.bank.util.CustomDateUtil;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -46,49 +42,6 @@ public class TransactionService {
         // 입출금 내역조회
         List<Transaction> transactionListPS = transactionRepository.findAllByAccountId(accountId, gubun, page);
         return new TransactionListRespDto(transactionListPS);
-    }
-
-    @Setter
-    @Getter
-    public static class TransactionListRespDto {
-        private List<TransactionDto> transactions = new ArrayList<>();
-
-        public TransactionListRespDto(List<Transaction> transactions) {
-            this.transactions = transactions.stream().map((transaction) -> new TransactionDto(transaction))
-                    .collect(Collectors.toList());
-        }
-
-        @Setter
-        @Getter
-        public class TransactionDto {
-            private Long id;
-            private Long amount;
-            private Long balance;
-            private String gubun;
-            private String createdAt;
-            private String from;
-            private String to;
-
-            public TransactionDto(Transaction transaction) {
-                this.id = transaction.getId();
-                this.amount = transaction.getAmount();
-                this.balance = transaction.getWithdrawAccountBalance(); // 내 계좌
-                this.gubun = transaction.getGubun().getValue(); // 입금, 출금, 이체
-                this.createdAt = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
-
-                if (gubun.equals("WITHDRAW")) {
-                    this.from = transaction.getWithdrawAccount().getNumber() + "";
-                    this.to = "ATM";
-                } else if (gubun.equals("DEPOSIT")) {
-                    this.from = "ATM";
-                    this.to = transaction.getDepositAccount().getNumber() + "";
-                } else {
-                    this.from = transaction.getWithdrawAccount().getNumber() + "";
-                    this.to = transaction.getDepositAccount().getNumber() + "";
-                }
-
-            }
-        }
     }
 
     @Transactional
