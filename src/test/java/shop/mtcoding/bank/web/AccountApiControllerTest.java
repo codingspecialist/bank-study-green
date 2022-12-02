@@ -133,4 +133,21 @@ public class AccountApiControllerTest extends DummyEntity {
         // then
         resultActions.andExpect(status().isOk());
     }
+
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void detail_test() throws Exception {
+        // given
+        Long accountId = 1L;
+
+        // when
+        ResultActions resultActions = mvc
+                .perform(get("/api/account/" + accountId));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
 }

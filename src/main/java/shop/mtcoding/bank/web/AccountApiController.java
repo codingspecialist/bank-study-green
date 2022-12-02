@@ -18,6 +18,7 @@ import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.config.exception.CustomApiException;
 import shop.mtcoding.bank.dto.AccountReqDto.AccountDeleteReqDto;
 import shop.mtcoding.bank.dto.AccountReqDto.AccountSaveReqDto;
+import shop.mtcoding.bank.dto.AccountRespDto.AccountDetailRespDto;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountListRespDto;
 import shop.mtcoding.bank.dto.AccountRespDto.AccountSaveRespDto;
 import shop.mtcoding.bank.dto.ResponseDto;
@@ -62,6 +63,14 @@ public class AccountApiController {
         log.debug("디버그 : AccountApiController save 호출됨");
         AccountSaveRespDto accountSaveRespDto = accountService.계좌생성(accountSaveReqDto, loginUser.getUser().getId());
         return new ResponseEntity<>(new ResponseDto<>("계좌생성완료", accountSaveRespDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<?> detail(@PathVariable Long accountId,
+            @AuthenticationPrincipal LoginUser loginUser) {
+        AccountDetailRespDto accountDetailRespDtos = accountService.본인_계좌상세보기(accountId, loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>("계좌상세보기 완료", accountDetailRespDtos),
+                HttpStatus.OK);
     }
 
 }

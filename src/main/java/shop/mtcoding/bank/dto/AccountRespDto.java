@@ -1,14 +1,70 @@
 package shop.mtcoding.bank.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import shop.mtcoding.bank.domain.account.Account;
+import shop.mtcoding.bank.domain.transaction.Transaction;
 import shop.mtcoding.bank.domain.user.User;
+import shop.mtcoding.bank.util.CustomDateUtil;
 
 public class AccountRespDto {
+
+    @Setter
+    @Getter
+    public static class AccountDetailRespDto {
+        private Long id;
+        private Long number;
+        private String fullName; // user.fullName
+        private Long balance;
+
+        private List<TransactionDto> transactions = new ArrayList<>();
+
+        public AccountDetailRespDto(Account account,
+                List<Transaction> transactions) {
+            this.id = account.getId();
+            this.number = account.getNumber();
+            this.fullName = account.getUser().getFullName();
+            this.balance = account.getBalance();
+            this.transactions = transactions.stream().map(TransactionDto::new).collect(Collectors.toList());
+        }
+
+        @Setter
+        @Getter
+        public class TransactionDto {
+            private Long id;
+            private Long amount;
+            private Long balance;
+            private String gubun;
+            private String createdAt;
+            private String from;
+            private String to;
+
+            public TransactionDto(Transaction transaction) {
+                this.id = transaction.getId();
+                this.amount = transaction.getAmount();
+                this.gubun = transaction.getGubun().getValue(); // 입금, 출금, 이체
+                this.createdAt = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
+
+                if (transaction.getGubun().name().equals("WITHDRAW")) {
+                    this.balance = transaction.getWithdrawAccountBalance(); // 출금된 내 계좌
+                    this.from = transaction.getWithdrawAccount().getNumber() + "";
+                    this.to = "ATM";
+                } else if (transaction.getGubun().name().equals("DEPOSIT")) {
+                    this.balance = transaction.getDepositAccountBalance(); // 입금된 내 계좌
+                    this.from = "ATM";
+                    this.to = transaction.getDepositAccount().getNumber() + "";
+                } else if (transaction.getGubun().name().equals("TRANSFER")) {
+                    this.balance = transaction.getWithdrawAccountBalance(); // 출금된 내 계좌
+                    this.from = transaction.getWithdrawAccount().getNumber() + "";
+                    this.to = transaction.getDepositAccount().getNumber() + "";
+                }
+            }
+        }
+    }
 
     @Setter
     @Getter
