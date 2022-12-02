@@ -47,9 +47,6 @@ public class User extends AudingTime {
     @Column(nullable = false)
     private UserEnum role; // ADMIN, CUSTOMER
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Account> accounts = new ArrayList<>();
-
     @Builder
     public User(Long id, String username, String password, String email, String fullName, UserEnum role) {
         this.id = id;
@@ -58,12 +55,6 @@ public class User extends AudingTime {
         this.email = email;
         this.fullName = fullName;
         this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
-                + ", fullName=" + fullName + ", role=" + role + "]";
     }
 
 }
