@@ -7,6 +7,28 @@ import lombok.Setter;
 import shop.mtcoding.bank.domain.transaction.Transaction;
 
 public class TransactionRespDto {
+
+    @Setter
+    @Getter
+    public static class TransferRespDto {
+        private Long id;
+        private Long amount;
+        private String gubun;
+        private String from;
+        private String to;
+        private Long withdrawAccountBalance;
+
+        public TransferRespDto(Transaction transaction) {
+            this.id = transaction.getId();
+            this.amount = transaction.getAmount();
+            this.gubun = transaction.getGubun().getValue(); // 이체
+            this.from = transaction.getWithdrawAccount().getNumber() + "";
+            this.to = transaction.getDepositAccount().getNumber() + "";
+            this.withdrawAccountBalance = transaction.getWithdrawAccountBalance();
+        }
+
+    }
+
     @Setter
     @Getter
     public static class DepositRespDto {

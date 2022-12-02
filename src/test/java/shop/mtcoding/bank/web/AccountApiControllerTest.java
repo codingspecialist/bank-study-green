@@ -53,8 +53,8 @@ public class AccountApiControllerTest extends DummyEntity {
     @BeforeEach
     public void setUp() {
         User ssar = userRepository.save(newUser("ssar"));
-        // Account ssarAccount1 = accountRepository.save(newAccount(1111L, ssar));
-        // Account ssarAccount2 = accountRepository.save(newAccount(2222L, ssar));
+        Account ssarAccount1 = accountRepository.save(newAccount(1111L, ssar));
+        Account ssarAccount2 = accountRepository.save(newAccount(2222L, ssar));
     }
 
     @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)

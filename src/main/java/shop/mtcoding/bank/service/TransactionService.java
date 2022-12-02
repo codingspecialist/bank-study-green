@@ -14,8 +14,10 @@ import shop.mtcoding.bank.domain.account.AccountRepository;
 import shop.mtcoding.bank.domain.transaction.Transaction;
 import shop.mtcoding.bank.domain.transaction.TransactionRepository;
 import shop.mtcoding.bank.dto.TransactionReqDto.DepositReqDto;
+import shop.mtcoding.bank.dto.TransactionReqDto.TransferReqDto;
 import shop.mtcoding.bank.dto.TransactionReqDto.WithdrawReqDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.DepositRespDto;
+import shop.mtcoding.bank.dto.TransactionRespDto.TransferRespDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.WithdrawRespDto;
 
 @RequiredArgsConstructor
@@ -25,6 +27,48 @@ public class TransactionService {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
+
+    @Transactional
+    public TransferRespDto 이체하기(TransferReqDto transferReqDto, Long withdrawNumber, Long depositNumber, Long userId) {
+        // 구분값 검증
+        if (TransactionEnum.valueOf(transferReqDto.getGubun()) != TransactionEnum.TRANSFER) {
+            throw new CustomApiException("구분값 검증 실패", HttpStatus.BAD_REQUEST);
+        }
+
+        // 출금계좌와 입금계좌가 동일하면 거부
+        if (withdrawNumber == depositNumber) {
+            throw new CustomApiException("입출금계좌가 동일할 수 없습니다", HttpStatus.BAD_REQUEST);
+        }
+
+        // 출금계좌 존재 확인
+        Account withdrawAccountPS = accountRepository.findByNumber(withdrawNumber)
+                .orElseThrow(() -> new CustomApiException("출금 계좌 없음", HttpStatus.BAD_REQUEST));
+
+        // 입금계좌 확인
+        Account depositAccountPS = accountRepository.findByNumber(depositNumber)
+                .orElseThrow(() -> new CustomApiException("입금 계좌 없음", HttpStatus.BAD_REQUEST));
+
+        // 0원 체크
+        if (transferReqDto.getAmount() <= 0) {
+            throw new CustomApiException("0원이 입금될 수 없습니다", HttpStatus.BAD_REQUEST);
+        }
+
+        // 출금계좌 소유자 체크
+        withdrawAccountPS.isOwner(userId);
+
+        // 출금계좌 비밀번호 확인
+        withdrawAccountPS.checkPassword(transferReqDto.getPassword());
+
+        // 이체하기 (출금계좌 금액 변경, 입금계좌 금액 변경, 트랜잭션 히스토리 생성)
+        withdrawAccountPS.withdraw(transferReqDto.getAmount()); // 더티체킹
+        depositAccountPS.입금하기(transferReqDto.getAmount()); // 더티체킹
+
+        Transaction transaction = transferReqDto.toEntity(withdrawAccountPS, depositAccountPS);
+        Transaction transactionPS = transactionRepository.save(transaction);
+
+        // DTO 응답
+        return new TransferRespDto(transactionPS);
+    }
 
     // /api/user/{id}/withdraw
     // /api/account/{number}/withdraw

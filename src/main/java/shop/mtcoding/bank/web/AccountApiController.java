@@ -43,13 +43,11 @@ public class AccountApiController {
 
     @GetMapping("/user/{userId}/account")
     public ResponseEntity<?> list(@PathVariable Long userId, @AuthenticationPrincipal LoginUser loginUser) {
-        if (userId != loginUser.getUser().getId()) {
-            throw new CustomApiException("권한이없습니다.", HttpStatus.FORBIDDEN);
-        }
         AccountListRespDto accountListRespDto = accountService.본인_계좌목록보기(userId);
         return new ResponseEntity<>(new ResponseDto<>("본인 계좌목록보기 성공", accountListRespDto), HttpStatus.OK);
     }
 
+    // 최주호 꺼!!
     @GetMapping("/v2/user/{userId}/account")
     public ResponseEntity<?> list2(@PathVariable Long userId, @AuthenticationPrincipal LoginUser loginUser) {
         if (userId != loginUser.getUser().getId()) {
