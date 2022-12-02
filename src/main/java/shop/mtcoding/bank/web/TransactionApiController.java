@@ -1,13 +1,10 @@
 package shop.mtcoding.bank.web;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import shop.mtcoding.bank.config.auth.LoginUser;
 import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.dto.TransactionReqDto.DepositReqDto;
+import shop.mtcoding.bank.dto.TransactionReqDto.TransferReqDto;
 import shop.mtcoding.bank.dto.TransactionReqDto.WithdrawReqDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.DepositRespDto;
+import shop.mtcoding.bank.dto.TransactionRespDto.TransferRespDto;
 import shop.mtcoding.bank.dto.TransactionRespDto.WithdrawRespDto;
 import shop.mtcoding.bank.service.TransactionService;
 
@@ -44,5 +43,17 @@ public class TransactionApiController {
     public ResponseEntity<?> deposit(@RequestBody DepositReqDto depositReqDto) {
         DepositRespDto depositRespDto = transactionService.입금하기(depositReqDto);
         return new ResponseEntity<>(new ResponseDto<>("입금성공", depositRespDto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/withdraw/{withdrawNumber}/deposit/{depositNumber}/transfer")
+    public ResponseEntity<?> transfer(
+            @PathVariable Long withdrawNumber,
+            @PathVariable Long depositNumber,
+            @RequestBody TransferReqDto transferReqDto,
+            @AuthenticationPrincipal LoginUser loginUser) {
+        TransferRespDto transferRespDto = transactionService.이체하기(transferReqDto, withdrawNumber, depositNumber,
+                loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>("이체 성공", transferRespDto),
+                HttpStatus.CREATED);
     }
 }
